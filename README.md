@@ -26,3 +26,10 @@ optional arguments:
                         Folder in which the images will be written.
   -p int, --ppm int     PPM size at which the images will be rendered.
 ```
+
+## Result
+
+1. The PNG images are accessible via URL like `https://twardoch.github.io/googlefonts-images/img/17/roboto.png`
+2. Each image base name corresponds to the folder name of the family in the Google Fonts repo, like `https://github.com/google/fonts/tree/main/apache/roboto` in the above example.
+3. Only the "main" font from each family folder is rendered. The "main" font gets determined by its shortest path name.
+
