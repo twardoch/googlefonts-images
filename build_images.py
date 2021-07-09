@@ -122,7 +122,7 @@ class GoogleFontsImageGenerator(object):
 def cli():
 
     parser = argparse.ArgumentParser(
-        prog="build_images",
+        prog="./build_images.py",
         description="""Takes a folder of Google Fonts and builds images"""
     )
     parser.add_argument(

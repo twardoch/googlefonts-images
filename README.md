@@ -1,20 +1,20 @@
 # googlefonts-images
 
-CLI tool to render images of each primary font of a font family from [Google Fonts](https://github.com/google/fonts). 
+CLI tool to render images of each primary font of a font family from [Google Fonts](https://github.com/google/fonts).
 
 ## Installation
 
-Needs macOS. 
+Needs macOS, perhaps also works on Linux.
 
-1. Install [Homebrew](https://brew.sh/)
-2. Install `brew install harfbuzz`
-3. Install `brew install python`
-4. Install `python3 -m pip install -r requirements.txt`
+1. Install [Homebrew](https://brew.sh/) on macOS.
+2. Run `brew install harfbuzz` or install `harfbuzz` on Linux.
+3. Run `brew install python` or install Python 3.9 or newer on Linux.
+4. Run `python3 -m pip install -r requirements.txt`
 
 ## Usage
 
 ```
-usage: build_images [-h] -f folder [-i folder] [-p int]
+usage: ./build_images.py [-h] -f folder [-i folder] [-p int]
 
 Takes a folder of Google Fonts and builds images
 
