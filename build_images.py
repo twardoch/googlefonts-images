@@ -8,14 +8,19 @@ from sh import hb_view as hbv
 import fontTools.ttLib
 import fontTools.unicodedata as ucd
 import random
+import argparse
 
 base_folder = Path(Path(__file__).parent)
 
 class GoogleFontsImageGenerator(object):
 
-    def __init__(self, fonts_folder):
+    def __init__(self, fonts_folder, images_folder=None, ppm=17):
+        self.ppm = ppm
         self.fonts_folder = Path(fonts_folder)
-        self.img_base_folder = Path(base_folder, 'img')
+        if images_folder:
+            self.img_base_folder = images_folder
+        else:
+            self.img_base_folder = Path(base_folder, 'img')
         self.fonts = OrderedDict()
         self.fonts_subfolders = ['apache', 'ofl', 'ufl']
         self.find_fonts()
@@ -88,7 +93,9 @@ class GoogleFontsImageGenerator(object):
                 if folder.is_dir():
                     self.fonts[str(Path(folder).stem)] = self.find_best_font(folder)
 
-    def render_font(self, font_path, png_path, ppm, text, script='Latn'):
+    def render_font(self, font_path, png_path, text, ppm=None, script='Latn'):
+        if not ppm:
+            ppm = self.ppm
         png = hbv(
             font_file=font_path,
             font_size=ppm,
@@ -100,23 +107,60 @@ class GoogleFontsImageGenerator(object):
             output_file=png_path
             )
 
-    def render_fonts(self, ppm):
-        png_folder = Path(self.img_base_folder, str(ppm))
+    def render_fonts(self):
+        png_folder = Path(self.img_base_folder, str(self.ppm))
         if not png_folder.is_dir():
             png_folder.mkdir(parents=True)
         for base in list(self.fonts.keys()):
             font_path = self.fonts[base]
             png_path = Path(png_folder, base + '.png')
             script, sample_text = self.get_script_sample_text(font_path, base)
-            self.render_font(font_path, png_path, ppm, sample_text, script)
+            self.render_font(font_path, png_path,
+                             sample_text, self.ppm, script)
             print(base, script, sample_text, font_path)
 
-def main(fonts_folder):
-    gfig = GoogleFontsImageGenerator(fonts_folder)
-    gfig.render_fonts(17)
+def cli():
 
-if __name__ == "__main__":
-    if len(sys.argv) < 2: 
-        print('call it with the path to your local copy of https://github.com/google/fonts')
-    else: 
-        main(sys.argv[1])
+    parser = argparse.ArgumentParser(
+        prog="build_images",
+        description="""Takes a folder of Google Fonts and builds images"""
+    )
+    parser.add_argument(
+        "-f",
+        "--fonts",
+        required=True,
+        metavar="folder",
+        dest="fonts_folder",
+        help="""Folder with the local copy of https://github.com/google/fonts"""
+    )
+    parser.add_argument(
+        "-i",
+        "--images",
+        required=False,
+        metavar="folder",
+        dest="images_folder",
+        help="Folder in which the images will be written."
+    )
+    parser.add_argument(
+        "-p",
+        "--ppm",
+        default=17,
+        required=False,
+        type=int,
+        metavar="int",
+        dest="ppm",
+        help="PPM size at which the images will be rendered."
+    )
+
+    args = parser.parse_args()
+    print("Running with %s" % (repr(vars(args))))
+
+    gfig = GoogleFontsImageGenerator(
+        fonts_folder=args.fonts_folder,
+        images_folder=args.images_folder,
+        ppm=args.ppm
+    )
+    gfig.render_fonts()
+
+if __name__ == '__main__':
+    cli()
