@@ -2,6 +2,14 @@
 .dccache
 *.code-workspace
 
+# macOS
+.DS_Store
+
+# Jekyll
+_site/
+.jekyll-cache/
+.jekyll-metadata
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
